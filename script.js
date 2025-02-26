@@ -15,6 +15,11 @@ userFormNode.addEventListener("submit", (eventObj) => {
 });
 
 function validateUserForm() {
+    // clear all previous error messages
+    const errorMessageNodes = document.querySelectorAll(".input-error");
+
+    errorMessageNodes.forEach(n => n.remove());
+
     let inputsAreValid = true;
 
     // capture the values of the inputs
@@ -24,17 +29,41 @@ function validateUserForm() {
 
     // "Blacklist" method: prevent disallowed values from being added
     // cf. "Whitelist" method: allowing specific patterns of values
-    const invalidChars = ["#", "$", "%", "^", "*", "&", " "];
+    const invalidChars = ["#", "$", "%"," ", "^", "*", "&"];
 
     if(userNameInputValue.trim().length < 4) {
         inputsAreValid = false;
+        displayInputError(userNameInputNode, 
+            "Username must be at least three characters."
+        );
     }
 
+    let invalidCharacterInput = false;
     invalidChars.forEach(c => {
         if(userNameInputValue.includes(c)) {
-            inputsAreValid = false;
+            invalidCharacterInput = true;
         }
     });
 
+    if(invalidCharacterInput) {
+        inputsAreValid = false;
+        displayInputError(userNameInputNode, 
+            `Characters ${invalidChars} not allowed.`
+        );
+    }
+
     return inputsAreValid;
+}
+
+function displayInputError(inputElement, message) {
+    // get the closest ancestor of the input element with the argument selector
+    const inputParentNode = inputElement.closest(".input-container");
+    const errorDisplayNode = document.createElement("span");
+    errorDisplayNode.textContent = message;
+    errorDisplayNode.classList.add("input-error");
+
+    // add aria role for alerts because HTML has no "alert" semantic element
+    errorDisplayNode.setAttribute("role", "alert");
+
+    inputParentNode.appendChild(errorDisplayNode);
 }
