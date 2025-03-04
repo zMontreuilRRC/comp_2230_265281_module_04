@@ -53,7 +53,24 @@ function validateUserForm() {
     }
 
     // EMAIL VALIDATION
-    
+    const emailInputNode = document.querySelector("#field_email");
+    const emailInputValue = emailInputNode.value;
+
+    // simple regex pattern: characters with an @ and a . between the
+    // '.+': one or more of any character (except line breaks)
+    // '@': literal '@' character
+    // '\.': literal '.' character
+    const simpleEmailPattern = /.+@.+\..+/;
+
+    // test the email against the pattern
+    const emailFollowsPattern = simpleEmailPattern.test(emailInputValue);
+    if(!emailFollowsPattern) {
+        inputsAreValid = false;
+        displayInputError(emailInputNode, 
+            `Please provide a valid email.`
+        );
+    }
+
 
     return inputsAreValid;
 }
