@@ -32,7 +32,7 @@ function validateUserForm() {
     // capture the values of the inputs
     // VALIDATE USERNAME
     const userNameInputNode = document.querySelector("#field_user-name");
-    const userNameInputValue = userNameInputNode.value;
+    const userNameInputValue = escapeHTML(userNameInputNode.value);
 
     // returns if user name is valid
     // has side effect of displaying error if the username is invalid
@@ -47,7 +47,7 @@ function validateUserForm() {
 
     // EMAIL VALIDATION
     const emailInputNode = document.querySelector("#field_email");
-    const emailInputValue = emailInputNode.value;
+    const emailInputValue = escapeHTML(emailInputNode.value);
 
     // return true if email is valid
     // as side effect, display error message at input node
@@ -153,4 +153,20 @@ function displayInputError(inputElement, message) {
     errorDisplayNode.setAttribute("role", "alert");
 
     inputParentNode.appendChild(errorDisplayNode);
+}
+
+/**
+ * Replace special HTML-relevant characters with HTML entities
+ * This replacement pattern found in RRC Front-End Development module 4 lecture notes
+ * @param {String} input - the value to be sanitized
+ * @returns {String} - input with relevant characters replaced with HTML entities 
+ */
+function escapeHTML(input) {
+    // for example, "<div>" is returned as &quot;&lt;div&gt;&quot;
+    return input
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
