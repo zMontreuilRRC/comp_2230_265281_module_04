@@ -52,6 +52,9 @@ function validateUserForm() {
         );
     }
 
+    // EMAIL VALIDATION
+    
+
     return inputsAreValid;
 }
 
