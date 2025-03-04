@@ -14,7 +14,14 @@ userFormNode.addEventListener("submit", (eventObj) => {
     }
 });
 
+/**
+ * Removes any error messages from form, collects form inputs, and validates them.
+ * Invokes @function displayInputError to insert error messages
+ * @returns {Boolean} True if no validation errors are found
+ */
 function validateUserForm() {
+    // we will divide these functions so that validateUserForm() interacts with the DOM
+    // each validation function will only return if the input is valid and any error messages
     // clear all previous error messages
     const errorMessageNodes = document.querySelectorAll(".input-error");
 
@@ -29,7 +36,14 @@ function validateUserForm() {
 
     // returns if user name is valid
     // has side effect of displaying error if the username is invalid
-    inputsAreValid = validateUserName(userNameInputValue, userNameInputNode);
+    const userNameValidation = validateUserName(userNameInputValue, userNameInputNode);
+    inputsAreValid = userNameValidation["isValid"];
+
+    if(userNameValidation["errorMessages"].length > 0) {
+        userNameValidation["errorMessages"].forEach(m => {
+            displayInputError(userNameInputNode, m)
+        });
+    }
 
     // EMAIL VALIDATION
     const emailInputNode = document.querySelector("#field_email");
@@ -37,20 +51,33 @@ function validateUserForm() {
 
     // return true if email is valid
     // as side effect, display error message at input node
-    inputsAreValid = validateEmail(emailInputValue, emailInputNode);
+    const emailValidation = validateEmail(emailInputValue, emailInputNode);
+    inputsAreValid = emailValidation["isValid"];
+
+    if(emailValidation["errorMessages"].length > 0) {
+        emailValidation["errorMessages"].forEach(m => {
+            displayInputError(emailInputNode, m)
+        });
+    }
 
     return inputsAreValid;
 }
 
-function validateUserName(input, fieldNode) {
+/**
+ * Validates a string to check for invalid characters and length
+ * @param {string} input - The value in the username field 
+ * @returns {Object}  the validation state
+ * @returns {Boolean} "isValid" - if all validations are correct
+ * @returns {String[]} "errorMessages" - errors found in validation 
+ */
+function validateUserName(input) {
     let validUsername = true;
+    const errorMessages = [];
     const invalidChars = ["#", "$", "%"," ", "^", "*", "&"];
 
     if(input.trim().length < 4) {
         validUsername = false;
-        displayInputError(fieldNode, 
-            "Username must be at least three characters."
-        );
+        errorMessages.push("Username must be at least three characters.");
     }
 
     let invalidCharacterInput = false;
@@ -62,16 +89,25 @@ function validateUserName(input, fieldNode) {
 
     if(invalidCharacterInput) {
         validUsername = false;
-        displayInputError(fieldNode, 
-            `Characters ${invalidChars} not allowed.`
-        );
+        errorMessages.push(`Characters ${invalidChars} not allowed.`);
     }
 
-    return validUsername;
+    return {
+        isValid: validUsername, 
+        errorMessages: errorMessages
+    };
 }
 
-function validateEmail(input, fieldNode) {
+/**
+ * Validates a string to check for email pattern compliance
+ * @param {string} input - The value in the email field 
+ * @returns {Object} the validation state
+ * @returns {Boolean} "isValid" - if all validations are correct
+ * @returns {String[]} "errorMessages" - errors found in validation 
+ */
+function validateEmail(input) {
     let validEmail = true;
+    const errorMessages = [];
 
     // simple regex pattern: characters with an @ and a . between the
     // '.+': one or more of any character (except line breaks)
@@ -95,14 +131,17 @@ function validateEmail(input, fieldNode) {
     const emailFollowsPattern = emailPattern.test(input);
     if(!emailFollowsPattern) {
         validEmail = false;
-        displayInputError(fieldNode, 
-            `Please provide a valid email.`
-        );
+        errorMessages.push("Please provide a valid email");
     }
 
-    return validEmail;
+    return {isValid: validEmail, errorMessages: errorMessages};
 }
 
+/**
+ * Appends error message node to parent node of field
+ * @param {HTMLElement} inputElement - the node of the field with a validation error
+ * @param {String} message - the text to be appended 
+ */
 function displayInputError(inputElement, message) {
     // get the closest ancestor of the input element with the argument selector
     const inputParentNode = inputElement.closest(".input-container");
