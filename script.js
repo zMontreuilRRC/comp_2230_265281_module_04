@@ -27,34 +27,51 @@ function validateUserForm() {
     const userNameInputNode = document.querySelector("#field_user-name");
     const userNameInputValue = userNameInputNode.value;
 
-    // "Blacklist" method: prevent disallowed values from being added
-    // cf. "Whitelist" method: allowing specific patterns of values
+    // returns if user name is valid
+    // has side effect of displaying error if the username is invalid
+    inputsAreValid = validateUserName(userNameInputValue, userNameInputNode);
+
+    // EMAIL VALIDATION
+    const emailInputNode = document.querySelector("#field_email");
+    const emailInputValue = emailInputNode.value;
+
+    // return true if email is valid
+    // as side effect, display error message at input node
+    inputsAreValid = validateEmail(emailInputValue, emailInputNode);
+
+    return inputsAreValid;
+}
+
+function validateUserName(input, fieldNode) {
+    let validUsername = true;
     const invalidChars = ["#", "$", "%"," ", "^", "*", "&"];
 
-    if(userNameInputValue.trim().length < 4) {
-        inputsAreValid = false;
-        displayInputError(userNameInputNode, 
+    if(input.trim().length < 4) {
+        validUsername = false;
+        displayInputError(fieldNode, 
             "Username must be at least three characters."
         );
     }
 
     let invalidCharacterInput = false;
     invalidChars.forEach(c => {
-        if(userNameInputValue.includes(c)) {
+        if(input.includes(c)) {
             invalidCharacterInput = true;
         }
     });
 
     if(invalidCharacterInput) {
-        inputsAreValid = false;
-        displayInputError(userNameInputNode, 
+        validUsername = false;
+        displayInputError(fieldNode, 
             `Characters ${invalidChars} not allowed.`
         );
     }
 
-    // EMAIL VALIDATION
-    const emailInputNode = document.querySelector("#field_email");
-    const emailInputValue = emailInputNode.value;
+    return validUsername;
+}
+
+function validateEmail(input, fieldNode) {
+    let validEmail = true;
 
     // simple regex pattern: characters with an @ and a . between the
     // '.+': one or more of any character (except line breaks)
@@ -75,15 +92,15 @@ function validateUserForm() {
     const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i; 
 
     // test the email against the pattern
-    const emailFollowsPattern = emailPattern.test(emailInputValue);
+    const emailFollowsPattern = emailPattern.test(input);
     if(!emailFollowsPattern) {
-        inputsAreValid = false;
-        displayInputError(emailInputNode, 
+        validEmail = false;
+        displayInputError(fieldNode, 
             `Please provide a valid email.`
         );
     }
 
-    return inputsAreValid;
+    return validEmail;
 }
 
 function displayInputError(inputElement, message) {
