@@ -14,18 +14,31 @@
                 <!-- group of related inputs -->
                 <legend>User Information</legend>
                 <!-- fieldset heading -->
-                <p class="input-container">
+                <div class="input-container">
                     <label for="field_user-name">Username</label>
                     <input type="text" name="user-name" id="field_user-name" />
-                </p>
-                <p class="input-container">
+                </div>
+                <div class="input-container">
                     <label for="field_email">Email</label>
                     <input type="text" name="email" id="field_email" />
-                </p>
-                <p>
-                    <input type="submit" value="Submit Information">
-                </p>
+                </div>
             </fieldset>
+            <fieldset>
+                <legend>User Type</legend>
+                <div class="input-container">
+                    <div>
+                        <input type="radio" id="radio-guest" name="user_type" value="Guest">
+                        <label for="radio-guest">Guest</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="radio-subscribed" name="user_type" value="Subscribed-User">
+                        <label for="radio-subscribed">Subscribed User</label>
+                    </div>
+                </div>
+            </fieldset>
+            <div>
+                <input type="submit" value="Submit Information">
+            </div>
         </form>
     </main>
     <script src="./script.js"></script>

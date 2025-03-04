@@ -37,7 +37,9 @@ function validateUserForm() {
     // returns if user name is valid
     // has side effect of displaying error if the username is invalid
     const userNameValidation = validateUserName(userNameInputValue, userNameInputNode);
-    inputsAreValid = userNameValidation["isValid"];
+    if(!userNameValidation["isValid"]) {
+        inputsAreValid = false;
+    }
 
     if(userNameValidation["errorMessages"].length > 0) {
         userNameValidation["errorMessages"].forEach(m => {
@@ -52,15 +54,55 @@ function validateUserForm() {
     // return true if email is valid
     // as side effect, display error message at input node
     const emailValidation = validateEmail(emailInputValue, emailInputNode);
-    inputsAreValid = emailValidation["isValid"];
-
+    if(!emailValidation["isValid"]) {
+        inputsAreValid = false;
+    }
+    
     if(emailValidation["errorMessages"].length > 0) {
         emailValidation["errorMessages"].forEach(m => {
             displayInputError(emailInputNode, m)
         });
     }
 
+    // USER TYPE VALIDATION
+    const userTypeNodes = document.querySelectorAll("input[name='user_type']");
+    const userTypeValidation = validateUserType(userTypeNodes);
+
+    if(!userTypeValidation["isValid"]) {
+        inputsAreValid = false;
+    }    
+    
+    if(userTypeValidation["errorMessages"].length > 0) {
+        userTypeValidation["errorMessages"].forEach(m => {
+            displayInputError(userTypeNodes[0], m);
+        });
+    }
+
     return inputsAreValid;
+}
+
+/**
+ * Validates if a list of radio nodes have any selected inputs among them
+ * @param {HTMLElement[]} nodes - the collected nodes of the radio element
+ * @returns {Object} - the state of validation
+ * @returns {Boolean} "isValid" - if a radio button has been checked
+ * @returns {String[]} "errorMessages" - error messages for the associated inputs
+ */
+function validateUserType(nodes) {
+    let anySelected = false;
+    const errorMessages = [];
+
+    nodes.forEach(n => {
+        if(n.checked) {
+            anySelected = true;
+        }
+    });
+
+    if(!anySelected) {
+        errorMessages.push("Please select one option.");
+    }
+
+    return {isValid: anySelected, errorMessages: errorMessages};
 }
 
 /**
