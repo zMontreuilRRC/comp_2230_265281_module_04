@@ -60,17 +60,28 @@ function validateUserForm() {
     // '.+': one or more of any character (except line breaks)
     // '@': literal '@' character
     // '\.': literal '.' character
-    const simpleEmailPattern = /.+@.+\..+/;
+    // const emailPattern = /.+@.+\..+/;
+
+    /**  more robust email pattern
+    * ^ and $: string must begin and end with this pattern
+    * [A-Z0-9._%+-]+: Allow one or more characters that fall within the [] 
+    *   (In this case, we want all alphabetic, numeric, and ._%+- characters)
+    * @: '@' character literal
+    * \.: '\.' character literal
+    * /i: case-insensitive flag
+    * [A-Z]{2,4}: any alphabetic character between 2 and 4 (inclusive) times
+    */
+
+    const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i; 
 
     // test the email against the pattern
-    const emailFollowsPattern = simpleEmailPattern.test(emailInputValue);
+    const emailFollowsPattern = emailPattern.test(emailInputValue);
     if(!emailFollowsPattern) {
         inputsAreValid = false;
         displayInputError(emailInputNode, 
             `Please provide a valid email.`
         );
     }
-
 
     return inputsAreValid;
 }
