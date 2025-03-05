@@ -5,6 +5,8 @@ This breakpoint is at the first line of the `displayInputError()` function, invo
 
 The DOM Node representing the Username input element has been provided as an argument, alongside a string argument for the associated error message.
 
+![Screenshot of JavaScript debugger part 1](./debug1-1.png)
+
 ### 1-2
 As the screenshot demonstrates, `inputParentNode` has been supplied a value by getting the first ancestor of the `inputElement` that has the `.input-container` class. 
 
@@ -13,6 +15,8 @@ The `errorDisplayNode` constant has also been initialized as a `<span>` node. It
 On line 197, the `appendChild()` method is invoked on the `inputParentNode` which will cause our new `errorDisplayNode` to appear on the screen.
 
 This matches our intended behaviour for the function, which is to find the appropriate parent of whatever element needs an error message displayed for it, and append a span with the appropriate message.
+
+![Screenshot of JavaScript debugger part 2](./debug1-2.png)
 
 ## Critical State Analysis
 This function is intentionally isolated from the rest of our code, so all that it indicates is that there is an `input` element with the id of `field_user-name` that has been queried and passed to the function alongside the `message` string. The function is written so that any node can be supplied alongside any kind of error message to the function, so long as that node has a parent with the `input-container` class.
